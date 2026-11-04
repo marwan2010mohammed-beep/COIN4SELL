@@ -1,0 +1,440 @@
+import React, { useState } from 'react';
+import { ArrowLeft, Sparkles, Send } from 'lucide-react';
+import { GoldCoinIcon } from './Icons';
+
+interface MemberCoinsPageProps {
+  onBack: () => void;
+  coins: number;
+  onEarnCoins: (amount: number) => void;
+}
+
+export const MemberCoinsPage: React.FC<MemberCoinsPageProps> = ({ onBack, coins, onEarnCoins }) => {
+  const [coinInput1, setCoinInput1] = useState('');
+  const [coinInput2, setCoinInput2] = useState('');
+  const [coinInput3, setCoinInput3] = useState('');
+
+  const handleSubmit1 = (e: React.FormEvent) => {
+    e.preventDefault();
+    const val = parseInt(coinInput1, 10);
+    if (isNaN(val) || val <= 0) return;
+
+    onEarnCoins(val);
+    setCoinInput1('');
+  };
+
+  const handleSubmit2 = (e: React.FormEvent) => {
+    e.preventDefault();
+    const val = parseInt(coinInput2, 10);
+    if (isNaN(val) || val <= 0) return;
+
+    onEarnCoins(val);
+    setCoinInput2('');
+  };
+
+  const handleSubmit3 = (e: React.FormEvent) => {
+    e.preventDefault();
+    const val = parseInt(coinInput3, 10);
+    if (isNaN(val) || val <= 0) return;
+
+    onEarnCoins(val);
+    setCoinInput3('');
+  };
+
+  return (
+    <div className="min-h-screen bg-[#05070D] text-slate-100 flex flex-col relative selection:bg-sky-500 selection:text-white">
+      {/* Top Header bar */}
+      <header className="sticky top-0 z-40 bg-[#060913]/90 backdrop-blur-md border-b border-sky-900/40 px-4 sm:px-8 py-4 flex items-center justify-between">
+        <button
+          onClick={onBack}
+          type="button"
+          className="cursor-pointer inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#0b1222] border border-sky-500/30 text-sky-400 hover:text-white hover:bg-sky-500/20 transition-all font-semibold text-xs sm:text-sm"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>Back to Home</span>
+        </button>
+
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={() => console.log('Buy coins clicked')}
+            className="cursor-pointer hover:opacity-90 transition-opacity flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500 text-slate-950 font-bold text-sm"
+          >
+            <span className="text-lg">🛍️</span>
+            <span>Buy Coins</span>
+          </button>
+          <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0a1124] border border-amber-500/30 text-amber-300 text-sm font-bold shadow-[0_0_15px_rgba(245,158,11,0.15)]">
+            <GoldCoinIcon className="w-4 h-4" />
+            <span className="tabular-nums">{coins.toLocaleString()} Coins</span>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content Container */}
+      <main className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-8 py-12 space-y-10">
+        {/* Title Banner */}
+        <div className="text-center space-y-4">
+          <div className="flex justify-center mb-4">
+            <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-sky-500/30 shadow-[0_0_20px_rgba(2,132,199,0.3)]">
+              <img
+                src="/assets/aistudio/image_56e3aee5.png"
+                alt="Discord Logo"
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).src = '/public/assets/aistudio/image_56e3aee5.png';
+                }}
+              />
+            </div>
+          </div>
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0a1224] border border-sky-500/30 text-sky-400 text-xs font-semibold">
+            <Sparkles className="w-3.5 h-3.5 text-sky-400 animate-pulse" />
+            <span>Official Member &amp; Coin Exchange Network</span>
+          </div>
+          <h1 className="text-4xl sm:text-6xl font-extrabold text-white tracking-tight">
+            Discord member Coins
+          </h1>
+          <p className="text-slate-300 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
+            Discover verified Discord communities, earn rewards by participating, and use your coins to power your server&apos;s organic growth.
+          </p>
+        </div>
+
+        {/* Bot Box Container */}
+        <div className="flex justify-center items-start gap-10">
+          {/* First Bot Box */}
+          <div className="max-w-xs w-full rounded-2xl bg-[#080d19] border border-sky-500/30 shadow-[0_0_30px_rgba(2,132,199,0.15)] overflow-hidden p-4 space-y-3">
+            <div className="flex justify-center pb-2 border-b border-slate-800/80">
+              <img
+                src="/assets/aistudio/image_25d75c7e.png"
+                alt="JOIN4JOIN Header"
+                className="h-12 w-auto object-contain mix-blend-screen"
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).src = '/public/assets/aistudio/image_25d75c7e.png';
+                }}
+              />
+            </div>
+            <form onSubmit={handleSubmit1} className="flex flex-col gap-2">
+              <div className="flex items-center gap-2">
+                <div className="relative max-w-[150px]">
+                  <input
+                    type="number"
+                    min="1"
+                    placeholder="Type members..."
+                    value={coinInput1}
+                    onChange={(e) => setCoinInput1(e.target.value)}
+                    className="w-full bg-[#050811] border border-slate-700/80 focus:border-sky-500 rounded-lg px-3 py-2 text-xs text-white placeholder-slate-500 outline-none transition-all shadow-inner"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="cursor-pointer inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs shadow-[0_0_15px_rgba(56,189,248,0.3)] transition-all shrink-0"
+                >
+                  <span>Add</span>
+                  <Send className="w-3 h-3" />
+                </button>
+              </div>
+              <div className="h-4">
+                {parseInt(coinInput1, 10) > 0 && (
+                  <div className="text-red-500 text-[10px] font-bold flex items-center gap-1">
+                    <span>Needs {parseInt(coinInput1, 10)} Coins</span>
+                    <GoldCoinIcon className="w-3 h-3" />
+                  </div>
+                )}
+              </div>
+            </form>
+          </div>
+
+          {/* Second Bot Box */}
+          <div className="max-w-xs w-full rounded-2xl bg-[#080d19] border border-sky-500/30 shadow-[0_0_30px_rgba(2,132,199,0.15)] overflow-hidden p-4 space-y-3">
+            <div className="flex justify-center pb-2 border-b border-slate-800/80">
+              <img
+                src="/assets/aistudio/image_735a3848.png"
+                alt="JOINS.LTD Header"
+                className="h-12 w-auto object-contain mix-blend-screen"
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).src = '/public/assets/aistudio/image_735a3848.png';
+                }}
+              />
+            </div>
+            <form onSubmit={handleSubmit2} className="flex flex-col gap-2">
+              <div className="flex items-center gap-2">
+                <div className="relative max-w-[150px]">
+                  <input
+                    type="number"
+                    min="1"
+                    placeholder="Type subs..."
+                    value={coinInput2}
+                    onChange={(e) => setCoinInput2(e.target.value)}
+                    className="w-full bg-[#050811] border border-slate-700/80 focus:border-sky-500 rounded-lg px-3 py-2 text-xs text-white placeholder-slate-500 outline-none transition-all shadow-inner"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="cursor-pointer inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs shadow-[0_0_15px_rgba(56,189,248,0.3)] transition-all shrink-0"
+                >
+                  <span>Add</span>
+                  <Send className="w-3 h-3" />
+                </button>
+              </div>
+              <div className="h-4">
+                {parseInt(coinInput2, 10) > 0 && (
+                  <div className="text-red-500 text-[10px] font-bold flex items-center gap-1">
+                    <span>Needs {parseInt(coinInput2, 10)} Subs</span>
+                    <GoldCoinIcon className="w-3 h-3" />
+                  </div>
+                )}
+              </div>
+            </form>
+          </div>
+        </div>
+
+        {/* YouTube Section */}
+        <div className="flex flex-col items-center pt-8">
+          <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-red-500/30 shadow-[0_0_20px_rgba(239,68,68,0.3)] mb-4">
+            <img
+              src="/assets/aistudio/image_10102c9f.png"
+              alt="YouTube Logo"
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                (e.currentTarget as HTMLImageElement).src = '/public/assets/aistudio/image_10102c9f.png';
+              }}
+            />
+          </div>
+          <h2 className="text-4xl sm:text-6xl font-extrabold text-white tracking-tight">Youtube Coins</h2>
+          
+          {/* Third Bot Box - Subscribe */}
+          <div className="max-w-xs w-full rounded-2xl bg-[#080d19] border border-sky-500/30 shadow-[0_0_30px_rgba(2,132,199,0.15)] overflow-hidden p-4 space-y-3 mt-6">
+            <div className="flex justify-center pb-2 border-b border-slate-800/80">
+              <img
+                src="/assets/aistudio/image_f603d2f4.png"
+                alt="Subscribe Header"
+                className="h-12 w-auto object-contain mix-blend-screen"
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).src = '/public/assets/aistudio/image_f603d2f4.png';
+                }}
+              />
+            </div>
+            <form onSubmit={handleSubmit3} className="flex flex-col gap-2">
+              <div className="flex items-center gap-2">
+                <div className="relative max-w-[150px]">
+                  <input
+                    type="number"
+                    min="1"
+                    placeholder="Type subs..."
+                    value={coinInput3}
+                    onChange={(e) => setCoinInput3(e.target.value)}
+                    className="w-full bg-[#050811] border border-slate-700/80 focus:border-sky-500 rounded-lg px-3 py-2 text-xs text-white placeholder-slate-500 outline-none transition-all shadow-inner"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="cursor-pointer inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs shadow-[0_0_15px_rgba(56,189,248,0.3)] transition-all shrink-0"
+                >
+                  <span>Add</span>
+                  <Send className="w-3 h-3" />
+                </button>
+              </div>
+              <div className="h-4">
+                {parseInt(coinInput3, 10) > 0 && (
+                  <div className="text-red-500 text-[10px] font-bold flex items-center gap-1">
+                    <span>Needs {parseInt(coinInput3, 10)} Follows</span>
+                    <GoldCoinIcon className="w-3 h-3" />
+                  </div>
+                )}
+              </div>
+            </form>
+          </div>
+        </div>
+
+        {/* TikTok Section */}
+        <div className="flex flex-col items-center pt-8">
+          <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-pink-500/30 shadow-[0_0_20px_rgba(236,72,153,0.3)] mb-4">
+            <img
+              src="/assets/aistudio/image_9ac3eb78.png"
+              alt="TikTok Logo"
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                (e.currentTarget as HTMLImageElement).src = '/public/assets/aistudio/image_9ac3eb78.png';
+              }}
+            />
+          </div>
+          <h2 className="text-4xl sm:text-6xl font-extrabold text-white tracking-tight">Tiktok Coins</h2>
+        </div>
+
+        {/* 8 Action Boxes */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-8">
+          {[
+            'Followers',
+            'Hearts',
+            'Comments Hearts',
+            'Views',
+            'Shares',
+            'Favourits',
+            'Live Stream',
+            'Repost',
+          ].map((title) => {
+            // eslint-disable-next-line react-hooks/rules-of-hooks
+            const [val, setVal] = useState('');
+            return (
+              <div
+                key={title}
+                className="rounded-2xl bg-[#080d19] border border-sky-500/30 shadow-[0_0_20px_rgba(2,132,199,0.1)] p-6 space-y-4"
+              >
+                <h3 className="text-base font-bold text-white text-center">{title}</h3>
+                <form
+                  className="flex flex-col gap-2"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    const n = parseInt(val, 10);
+                    if (!isNaN(n) && n > 0) onEarnCoins(n);
+                    setVal('');
+                  }}
+                >
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="number"
+                      min="1"
+                      placeholder="Type..."
+                      value={val}
+                      onChange={(e) => setVal(e.target.value)}
+                      className="w-full bg-[#050811] border border-slate-700/80 focus:border-sky-500 rounded-lg px-3 py-2 text-xs text-white placeholder-slate-500 outline-none transition-all shadow-inner"
+                    />
+                    <button
+                      type="submit"
+                      className="cursor-pointer px-3 py-2 rounded-lg bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs shadow-[0_0_10px_rgba(56,189,248,0.2)] transition-all shrink-0"
+                    >
+                      <Send className="w-3 h-3" />
+                    </button>
+                  </div>
+                  <div className="h-4">
+                    {parseInt(val, 10) > 0 && (
+                      <div className="text-red-500 text-[10px] font-bold flex items-center gap-1 justify-center">
+                        <span>Needs {parseInt(val, 10)} Coins</span>
+                        <GoldCoinIcon className="w-3 h-3" />
+                      </div>
+                    )}
+                  </div>
+                </form>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Twitch Section */}
+        <div className="flex flex-col items-center pt-8">
+          <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-purple-500/30 shadow-[0_0_20px_rgba(168,85,247,0.3)] mb-4">
+            <img
+              src="/assets/aistudio/image_be820902.png"
+              alt="Twitch Logo"
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                (e.currentTarget as HTMLImageElement).src = '/public/assets/aistudio/image_be820902.png';
+              }}
+            />
+          </div>
+          <h2 className="text-4xl sm:text-6xl font-extrabold text-white tracking-tight">Twitch Coins</h2>
+          
+          {/* Fifth Bot Box - Twitch */}
+          <div className="max-w-xs w-full rounded-2xl bg-[#080d19] border border-sky-500/30 shadow-[0_0_30px_rgba(2,132,199,0.15)] overflow-hidden p-4 space-y-3 mt-6">
+            <div className="flex justify-center pb-2 border-b border-slate-800/80">
+              <img
+                src="/assets/aistudio/image-removebg-preview_c5cd503b.png"
+                alt="Twitch Header"
+                className="h-12 w-auto object-contain mix-blend-screen"
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).src = '/public/assets/aistudio/image-removebg-preview_c5cd503b.png';
+                }}
+              />
+            </div>
+            <form onSubmit={handleSubmit3} className="flex flex-col gap-2">
+              <div className="flex items-center gap-2">
+                <div className="relative max-w-[150px]">
+                  <input
+                    type="number"
+                    min="1"
+                    placeholder="Type follows..."
+                    value={coinInput3}
+                    onChange={(e) => setCoinInput3(e.target.value)}
+                    className="w-full bg-[#050811] border border-slate-700/80 focus:border-sky-500 rounded-lg px-3 py-2 text-xs text-white placeholder-slate-500 outline-none transition-all shadow-inner"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="cursor-pointer inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs shadow-[0_0_15px_rgba(56,189,248,0.3)] transition-all shrink-0"
+                >
+                  <span>Add</span>
+                  <Send className="w-3 h-3" />
+                </button>
+              </div>
+              <div className="h-4">
+                {parseInt(coinInput3, 10) > 0 && (
+                  <div className="text-red-500 text-[10px] font-bold flex items-center gap-1">
+                    <span>Needs {parseInt(coinInput3, 10)} Follows</span>
+                    <GoldCoinIcon className="w-3 h-3" />
+                  </div>
+                )}
+              </div>
+            </form>
+          </div>
+        </div>
+
+        {/* Kick Section */}
+        <div className="flex flex-col items-center pt-8">
+          <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-green-500/30 shadow-[0_0_20px_rgba(34,197,94,0.3)] mb-4">
+            <img
+              src="/assets/aistudio/image-removebg-preview__1__5f385f96.png"
+              alt="Kick Logo"
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                (e.currentTarget as HTMLImageElement).src = '/public/assets/aistudio/image-removebg-preview__1__5f385f96.png';
+              }}
+            />
+          </div>
+          <h2 className="text-4xl sm:text-6xl font-extrabold text-white tracking-tight">Kick Coins</h2>
+          
+          {/* Sixth Bot Box - Kick */}
+          <div className="max-w-xs w-full rounded-2xl bg-[#080d19] border border-sky-500/30 shadow-[0_0_30px_rgba(2,132,199,0.15)] overflow-hidden p-4 space-y-3 mt-6">
+            <div className="flex justify-center pb-2 border-b border-slate-800/80">
+              <img
+                src="/assets/aistudio/image-removebg-preview__2__0b761b12.png"
+                alt="Kick Header"
+                className="h-12 w-auto object-contain mix-blend-screen"
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).src = '/public/assets/aistudio/image-removebg-preview__2__0b761b12.png';
+                }}
+              />
+            </div>
+            <form onSubmit={handleSubmit3} className="flex flex-col gap-2">
+              <div className="flex items-center gap-2">
+                <div className="relative max-w-[150px]">
+                  <input
+                    type="number"
+                    min="1"
+                    placeholder="Type follows..."
+                    value={coinInput3}
+                    onChange={(e) => setCoinInput3(e.target.value)}
+                    className="w-full bg-[#050811] border border-slate-700/80 focus:border-sky-500 rounded-lg px-3 py-2 text-xs text-white placeholder-slate-500 outline-none transition-all shadow-inner"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="cursor-pointer inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs shadow-[0_0_15px_rgba(56,189,248,0.3)] transition-all shrink-0"
+                >
+                  <span>Add</span>
+                  <Send className="w-3 h-3" />
+                </button>
+              </div>
+              <div className="h-4">
+                {parseInt(coinInput3, 10) > 0 && (
+                  <div className="text-red-500 text-[10px] font-bold flex items-center gap-1">
+                    <span>Needs {parseInt(coinInput3, 10)} Follows</span>
+                    <GoldCoinIcon className="w-3 h-3" />
+                  </div>
+                )}
+              </div>
+            </form>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default MemberCoinsPage;
