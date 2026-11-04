@@ -19,3 +19,13 @@ export interface FaqItem {
   question: string;
   answer: string;
 }
+
+export interface DiscordUser {
+  id: string;
+  username: string;
+  discriminator: string;
+  global_name?: string | null;
+  avatar: string | null;
+  banner?: string | null;
+  accent_color?: number | null;
+}

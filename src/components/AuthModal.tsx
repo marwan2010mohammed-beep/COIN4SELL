@@ -6,9 +6,15 @@ interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: (username: string) => void;
+  onLoginWithDiscord?: () => void;
 }
 
-export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => {
+export const AuthModal: React.FC<AuthModalProps> = ({
+  isOpen,
+  onClose,
+  onSuccess,
+  onLoginWithDiscord,
+}) => {
   const [step, setStep] = useState<'authorize' | 'selectServer' | 'complete'>('authorize');
   const [selectedServer, setSelectedServer] = useState<string>('Cyberpunk Tavern');
 
@@ -75,10 +81,17 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
             <div className="pt-2 space-y-2">
               <button
                 type="button"
-                onClick={() => setStep('selectServer')}
+                onClick={() => {
+                  if (onLoginWithDiscord) {
+                    onLoginWithDiscord();
+                  } else {
+                    setStep('selectServer');
+                  }
+                }}
                 className="cursor-pointer w-full py-3.5 rounded-xl font-bold text-sm text-white bg-[#5865F2] hover:bg-[#4752c4] shadow-lg shadow-indigo-900/40 flex items-center justify-center gap-2 transition-all active:scale-[0.99]"
               >
-                <span>Authorize &amp; Continue</span>
+                <DiscordIcon className="w-4 h-4 text-white" />
+                <span>Authorize with Discord</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
               <button

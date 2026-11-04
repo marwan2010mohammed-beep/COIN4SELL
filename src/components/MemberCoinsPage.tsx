@@ -1,14 +1,23 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Sparkles, Send } from 'lucide-react';
+import { ArrowLeft, Sparkles, Send, LogOut } from 'lucide-react';
 import { GoldCoinIcon } from './Icons';
+import { DiscordUser, getDiscordAvatarUrl } from '../utils/discordAuth';
 
 interface MemberCoinsPageProps {
   onBack: () => void;
   coins: number;
   onEarnCoins: (amount: number) => void;
+  discordUser?: DiscordUser | null;
+  onLogout?: () => void;
 }
 
-export const MemberCoinsPage: React.FC<MemberCoinsPageProps> = ({ onBack, coins, onEarnCoins }) => {
+export const MemberCoinsPage: React.FC<MemberCoinsPageProps> = ({
+  onBack,
+  coins,
+  onEarnCoins,
+  discordUser,
+  onLogout,
+}) => {
   const [coinInput1, setCoinInput1] = useState('');
   const [coinInput2, setCoinInput2] = useState('');
   const [coinInput3, setCoinInput3] = useState('');
@@ -54,6 +63,28 @@ export const MemberCoinsPage: React.FC<MemberCoinsPageProps> = ({ onBack, coins,
         </button>
 
         <div className="flex items-center gap-3">
+          {discordUser && (
+            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#0a1124] border border-sky-500/30">
+              <img
+                src={getDiscordAvatarUrl(discordUser, 48)}
+                alt={discordUser.username}
+                className="w-5 h-5 rounded-full object-cover border border-sky-400"
+              />
+              <span className="text-xs font-bold text-white max-w-[100px] truncate">
+                {discordUser.global_name || discordUser.username}
+              </span>
+              {onLogout && (
+                <button
+                  onClick={onLogout}
+                  type="button"
+                  title="Log Out"
+                  className="cursor-pointer ml-1 text-slate-400 hover:text-red-400"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+          )}
           <button 
             onClick={() => console.log('Buy coins clicked')}
             className="cursor-pointer hover:opacity-90 transition-opacity flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500 text-slate-950 font-bold text-sm"

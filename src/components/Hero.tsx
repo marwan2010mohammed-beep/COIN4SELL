@@ -1,17 +1,30 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ArrowRight, ShieldCheck, Users, Sparkles } from 'lucide-react';
+import { ArrowRight, ShieldCheck, Users, Sparkles, LogOut } from 'lucide-react';
 import { DiscordIcon } from './Icons';
 import { DashboardMockup } from './DashboardMockup';
 import FoldText from './FoldText';
 import FlipFadeText from './FlipFadeText';
+import { DiscordUser, getDiscordAvatarUrl } from '../utils/discordAuth';
 
 interface HeroProps {
   onOpenAuth: () => void;
   onEarnCoin: (amount: number) => void;
   coins: number;
+  discordUser: DiscordUser | null;
+  onLoginWithDiscord: () => void;
+  onLogout: () => void;
+  onOpenDashboard: () => void;
 }
 
-export const Hero: React.FC<HeroProps> = ({ onOpenAuth, onEarnCoin, coins }) => {
+export const Hero: React.FC<HeroProps> = ({
+  onOpenAuth: _onOpenAuth,
+  onEarnCoin,
+  coins,
+  discordUser,
+  onLoginWithDiscord,
+  onLogout,
+  onOpenDashboard,
+}) => {
   const ctaRef = useRef<HTMLDivElement | null>(null);
   const [ctaVisible, setCtaVisible] = useState(false);
 
@@ -128,41 +141,89 @@ export const Hero: React.FC<HeroProps> = ({ onOpenAuth, onEarnCoin, coins }) => 
               : 'opacity-0 translate-y-8 blur-[2px]'
           }`}
         >
-          {/* Primary Action Button */}
+          {/* Primary Action Button / Logged-in State */}
           <div
             className={`relative group w-full sm:w-auto transition-all duration-700 delay-100 ease-[cubic-bezier(0.16,1,0.3,1)] ${
               ctaVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-6 scale-95'
             }`}
           >
-            {/* Ambient Multi-layered Radial Glow */}
-            <div
-              className="absolute -inset-1 bg-gradient-to-r from-sky-500 via-cyan-400 to-blue-600 rounded-2xl blur-lg opacity-40 group-hover:opacity-85 transition-all duration-500 group-hover:duration-200 pointer-events-none"
-              aria-hidden="true"
-            />
+            {discordUser ? (
+              <div className="flex flex-col sm:flex-row items-center gap-3 p-2.5 pr-4 rounded-2xl bg-[#0a1122]/95 border border-sky-500/40 shadow-[0_0_30px_rgba(56,189,248,0.25)] backdrop-blur-md">
+                <div className="flex items-center gap-3 pl-1">
+                  <div className="relative">
+                    <img
+                      src={getDiscordAvatarUrl(discordUser, 96)}
+                      alt={discordUser.username}
+                      className="w-11 h-11 rounded-full border-2 border-emerald-400 object-cover shadow-[0_0_15px_rgba(16,185,129,0.4)]"
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).src = 'https://cdn.discordapp.com/embed/avatars/0.png';
+                      }}
+                    />
+                    <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-400 border-2 border-[#0a1122]" />
+                  </div>
+                  <div className="text-left">
+                    <div className="text-[11px] text-emerald-400 font-semibold uppercase tracking-wider flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                      <span>Logged In</span>
+                    </div>
+                    <div className="text-sm font-extrabold text-white">
+                      {discordUser.global_name || discordUser.username}
+                      <span className="text-xs text-slate-400 font-normal ml-1.5">(@{discordUser.username})</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 mt-2 sm:mt-0 sm:ml-4">
+                  <button
+                    onClick={onOpenDashboard}
+                    type="button"
+                    className="cursor-pointer px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs shadow-[0_0_15px_rgba(56,189,248,0.3)] transition-all flex items-center gap-1.5"
+                  >
+                    <span>Dashboard</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    onClick={onLogout}
+                    type="button"
+                    className="cursor-pointer px-3 py-2 rounded-xl bg-slate-900/90 hover:bg-red-500/20 text-slate-300 hover:text-red-400 font-semibold text-xs border border-slate-700 hover:border-red-500/40 transition-all flex items-center gap-1"
+                  >
+                    <LogOut className="w-3.5 h-3.5" />
+                    <span>Log Out</span>
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <>
+                {/* Ambient Multi-layered Radial Glow for Discord blurple */}
+                <div
+                  className="absolute -inset-1 bg-gradient-to-r from-[#5865F2] via-[#7289da] to-[#4752C4] rounded-2xl blur-lg opacity-40 group-hover:opacity-85 transition-all duration-500 group-hover:duration-200 pointer-events-none"
+                  aria-hidden="true"
+                />
 
-            <button
-              onClick={onOpenAuth}
-              type="button"
-              className="cursor-pointer relative w-full sm:w-auto px-7 py-3.5 sm:py-4 rounded-xl font-semibold text-sm sm:text-base text-white bg-gradient-to-r from-[#0284c7] via-[#0ea5e9] to-[#2563eb] border border-sky-300/30 shadow-[0_0_25px_rgba(56,189,248,0.35)] hover:shadow-[0_0_40px_rgba(56,189,248,0.65)] active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2.5 overflow-hidden"
-            >
-              {/* Shimmer light sweep */}
-              <span
-                className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none"
-                aria-hidden="true"
-              />
+                <button
+                  onClick={onLoginWithDiscord}
+                  type="button"
+                  className="cursor-pointer relative w-full sm:w-auto px-8 py-4 rounded-xl font-bold text-sm sm:text-base text-white bg-[#5865F2] hover:bg-[#4752C4] border border-[#7983f5]/50 shadow-[0_0_30px_rgba(88,101,242,0.45)] hover:shadow-[0_0_45px_rgba(88,101,242,0.7)] active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2.5 overflow-hidden"
+                >
+                  {/* Shimmer light sweep */}
+                  <span
+                    className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none"
+                    aria-hidden="true"
+                  />
 
-              {/* Glass specular top highlight */}
-              <span
-                className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/60 to-transparent pointer-events-none"
-                aria-hidden="true"
-              />
+                  {/* Glass specular top highlight */}
+                  <span
+                    className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/60 to-transparent pointer-events-none"
+                    aria-hidden="true"
+                  />
 
-              <DiscordIcon className="w-5 h-5 text-white transition-transform duration-300 group-hover:scale-110 drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]" />
-              <span className="tracking-tight font-bold drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]">
-                Get started free
-              </span>
-              <ArrowRight className="w-4 h-4 ml-0.5 transition-transform duration-300 group-hover:translate-x-1" />
-            </button>
+                  <DiscordIcon className="w-5 h-5 text-white transition-transform duration-300 group-hover:scale-110 drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]" />
+                  <span className="tracking-tight font-bold drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]">
+                    Login with Discord
+                  </span>
+                  <ArrowRight className="w-4 h-4 ml-0.5 transition-transform duration-300 group-hover:translate-x-1" />
+                </button>
+              </>
+            )}
           </div>
 
           {/* Secondary Action Button */}

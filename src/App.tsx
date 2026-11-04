@@ -16,6 +16,15 @@ import { LegalModal } from './components/LegalModal';
 import { Toast, ToastMessage } from './components/Toast';
 import { MemberCoinsPage } from './components/MemberCoinsPage';
 import { BackToTopButton } from './components/BackToTopButton';
+import {
+  DiscordUser,
+  parseDiscordHashToken,
+  fetchDiscordUserProfile,
+  redirectToDiscordAuth,
+  getStoredDiscordSession,
+  saveDiscordSession,
+  clearDiscordSession,
+} from './utils/discordAuth';
 
 export default function App() {
   const [coins, setCoins] = useState(0);
@@ -24,6 +33,7 @@ export default function App() {
   const [showMemberCoins, setShowMemberCoins] = useState(false);
   const [legalTitle, setLegalTitle] = useState<string | null>(null);
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
+  const [discordUser, setDiscordUser] = useState<DiscordUser | null>(null);
 
   const addToast = (type: 'coin' | 'success' | 'info', title: string, subtitle?: string) => {
     const id = Date.now().toString() + Math.random().toString();
@@ -46,6 +56,48 @@ export default function App() {
       `Checkout simulated for $${price.toFixed(2)} via Stripe.`
     );
   };
+
+  const handleLoginWithDiscord = () => {
+    redirectToDiscordAuth();
+  };
+
+  const handleLogout = () => {
+    clearDiscordSession();
+    setDiscordUser(null);
+    addToast('info', 'Logged Out', 'You have been logged out of Discord.');
+  };
+
+  // Immediate check for URL hash fragment (#access_token=...) on redirect back
+  useEffect(() => {
+    const hashData = parseDiscordHashToken();
+    if (hashData && hashData.token) {
+      // Async fetch request using that token to call 'https://discord.com/api/users/@me'
+      fetchDiscordUserProfile(hashData.token)
+        .then((profile) => {
+          setDiscordUser(profile);
+          saveDiscordSession(hashData.token, profile);
+          addToast(
+            'success',
+            `Welcome back, ${profile.global_name || profile.username}!`,
+            `Successfully authenticated with Discord (@${profile.username})`
+          );
+        })
+        .catch((err) => {
+          console.error('Failed to fetch Discord user profile:', err);
+          addToast(
+            'info',
+            'Discord Auth Failed',
+            'Could not retrieve user details from Discord.'
+          );
+        });
+    } else {
+      // Restore existing stored session if already authenticated
+      const session = getStoredDiscordSession();
+      if (session.user) {
+        setDiscordUser(session.user);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -100,6 +152,8 @@ export default function App() {
         onBack={() => setShowMemberCoins(false)}
         coins={coins}
         onEarnCoins={handleEarnCoin}
+        discordUser={discordUser}
+        onLogout={handleLogout}
       />
     );
   }
@@ -131,16 +185,23 @@ export default function App() {
       {/* Navigation Bar */}
       <Navbar
         onOpenDashboard={() => setShowMemberCoins(true)}
-        onOpenAuth={() => setShowMemberCoins(true)}
+        onOpenAuth={handleLoginWithDiscord}
+        discordUser={discordUser}
+        onLoginWithDiscord={handleLoginWithDiscord}
+        onLogout={handleLogout}
       />
 
       {/* Main Content Sections */}
       <main className="flex-1 relative z-10">
         {/* Hero Section with Dashboard Mockup */}
         <Hero
-          onOpenAuth={() => setShowMemberCoins(true)}
+          onOpenAuth={handleLoginWithDiscord}
           onEarnCoin={handleEarnCoin}
           coins={coins}
+          discordUser={discordUser}
+          onLoginWithDiscord={handleLoginWithDiscord}
+          onLogout={handleLogout}
+          onOpenDashboard={() => setShowMemberCoins(true)}
         />
 
         {/* 4-Column Proof Bar */}
@@ -190,13 +251,19 @@ export default function App() {
         />
 
         {/* Bottom CTA Card */}
-        <CtaSection onOpenAuth={() => setIsAuthOpen(true)} />
+        <CtaSection
+          onOpenAuth={handleLoginWithDiscord}
+          discordUser={discordUser}
+          onLoginWithDiscord={handleLoginWithDiscord}
+          onLogout={handleLogout}
+          onOpenDashboard={() => setShowMemberCoins(true)}
+        />
       </main>
 
       {/* Footer */}
       <Footer
         onOpenDashboard={() => setIsDashboardOpen(true)}
-        onOpenAuth={() => setIsAuthOpen(true)}
+        onOpenAuth={handleLoginWithDiscord}
         onOpenLegal={(title) => setLegalTitle(title)}
       />
 
@@ -207,6 +274,7 @@ export default function App() {
         onSuccess={(serverName) => {
           addToast('success', `Connected: ${serverName}`, 'Server featured in organic discovery queue!');
         }}
+        onLoginWithDiscord={handleLoginWithDiscord}
       />
 
       <DashboardModal

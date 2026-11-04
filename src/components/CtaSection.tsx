@@ -1,12 +1,23 @@
 import React from 'react';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, LogOut } from 'lucide-react';
 import { DiscordIcon } from './Icons';
+import { DiscordUser, getDiscordAvatarUrl } from '../utils/discordAuth';
 
 interface CtaSectionProps {
   onOpenAuth: () => void;
+  discordUser: DiscordUser | null;
+  onLoginWithDiscord: () => void;
+  onLogout: () => void;
+  onOpenDashboard: () => void;
 }
 
-export const CtaSection: React.FC<CtaSectionProps> = ({ onOpenAuth }) => {
+export const CtaSection: React.FC<CtaSectionProps> = ({
+  onOpenAuth: _onOpenAuth,
+  discordUser,
+  onLoginWithDiscord,
+  onLogout,
+  onOpenDashboard,
+}) => {
   return (
     <section className="py-20 sm:py-28 px-4 sm:px-6 relative">
       <div className="max-w-4xl mx-auto">
@@ -27,15 +38,51 @@ export const CtaSection: React.FC<CtaSectionProps> = ({ onOpenAuth }) => {
             </p>
 
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3.5">
-              <button
-                onClick={onOpenAuth}
-                type="button"
-                className="cursor-pointer w-full sm:w-auto px-6 py-3.5 rounded-xl font-semibold text-sm sm:text-base text-white bg-gradient-to-r from-sky-500 via-sky-600 to-blue-600 hover:from-sky-400 hover:to-blue-500 shadow-[0_0_25px_rgba(56,189,248,0.35)] hover:shadow-[0_0_35px_rgba(56,189,248,0.55)] active:scale-[0.98] transition-all flex items-center justify-center gap-2.5"
-              >
-                <DiscordIcon className="w-5 h-5" />
-                <span>Get started free</span>
-                <ArrowRight className="w-4 h-4 ml-0.5" />
-              </button>
+              {discordUser ? (
+                <div className="flex flex-col sm:flex-row items-center gap-3 p-3 rounded-2xl bg-[#090e1c] border border-sky-500/40">
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={getDiscordAvatarUrl(discordUser, 64)}
+                      alt={discordUser.username}
+                      className="w-9 h-9 rounded-full border border-sky-400 object-cover"
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).src = 'https://cdn.discordapp.com/embed/avatars/0.png';
+                      }}
+                    />
+                    <div className="text-left">
+                      <div className="text-xs text-sky-400 font-semibold">Logged In</div>
+                      <div className="text-sm font-bold text-white">@{discordUser.username}</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 sm:ml-4">
+                    <button
+                      onClick={onOpenDashboard}
+                      type="button"
+                      className="cursor-pointer px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs"
+                    >
+                      Open Dashboard
+                    </button>
+                    <button
+                      onClick={onLogout}
+                      type="button"
+                      className="cursor-pointer px-3 py-2 rounded-xl bg-slate-800 hover:bg-red-500/20 text-slate-300 hover:text-red-400 text-xs font-semibold border border-slate-700 flex items-center gap-1"
+                    >
+                      <LogOut className="w-3.5 h-3.5" />
+                      <span>Log Out</span>
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  onClick={onLoginWithDiscord}
+                  type="button"
+                  className="cursor-pointer w-full sm:w-auto px-7 py-3.5 rounded-xl font-bold text-sm sm:text-base text-white bg-[#5865F2] hover:bg-[#4752C4] shadow-[0_0_30px_rgba(88,101,242,0.45)] hover:shadow-[0_0_40px_rgba(88,101,242,0.65)] active:scale-[0.98] transition-all flex items-center justify-center gap-2.5 border border-[#7983f5]/50"
+                >
+                  <DiscordIcon className="w-5 h-5 text-white" />
+                  <span>Login with Discord</span>
+                  <ArrowRight className="w-4 h-4 ml-0.5" />
+                </button>
+              )}
 
               <a
                 href="#pricing"
