@@ -187,7 +187,7 @@ export const MemberCoinsPage: React.FC<MemberCoinsPageProps> = ({
                   className="cursor-pointer inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#F59E0B] hover:bg-[#D97706] text-slate-950 font-bold text-xs sm:text-sm shadow-md transition-all active:scale-95"
                 >
                   <ShoppingBag className="w-4 h-4" />
-                  <span>Get coins</span>
+                  <span>Buy coins</span>
                 </button>
                 <button
                   type="button"

@@ -290,6 +290,9 @@ export default function App() {
       <DevAdminModal
         isOpen={isDevAdminOpen}
         onClose={() => setIsDevAdminOpen(false)}
+        onGoHome={() => setShowMemberCoins(false)}
+        onGoDashboard={() => setShowMemberCoins(true)}
+        onOpenAuth={() => setIsAuthOpen(true)}
       />
 
       <DashboardModal

@@ -1,13 +1,22 @@
 import React, { useState } from 'react';
-import { X, Lock, ShieldCheck, Globe, UserCheck } from 'lucide-react';
+import { X, Lock, ShieldCheck, Globe, LayoutDashboard, Home, KeyRound } from 'lucide-react';
 import { DiscordUser, getDiscordAvatarUrl } from '../utils/discordAuth';
 
 interface DevAdminModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onGoHome: () => void;
+  onGoDashboard: () => void;
+  onOpenAuth: () => void;
 }
 
-export const DevAdminModal: React.FC<DevAdminModalProps> = ({ isOpen, onClose }) => {
+export const DevAdminModal: React.FC<DevAdminModalProps> = ({
+  isOpen,
+  onClose,
+  onGoHome,
+  onGoDashboard,
+  onOpenAuth,
+}) => {
   const [password, setPassword] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [error, setError] = useState(false);
@@ -35,7 +44,6 @@ export const DevAdminModal: React.FC<DevAdminModalProps> = ({ isOpen, onClose })
     console.error(e);
   }
 
-  // Add mock IP and Country Flag for registered users if not present
   const enhancedUsers = users.map((u, idx) => {
     const ips = ['197.54.22.10', '41.234.12.90', '154.180.55.12', '102.45.89.201'];
     const countries = ['Egypt 🇪🇬', 'United Arab Emirates 🇦🇪', 'Saudi Arabia 🇸🇦', 'United States 🇺🇸'];
@@ -67,7 +75,7 @@ export const DevAdminModal: React.FC<DevAdminModalProps> = ({ isOpen, onClose })
               </div>
               <h3 className="text-2xl font-extrabold text-white">Developer Access</h3>
               <p className="text-xs sm:text-sm text-slate-400">
-                Enter developer password to access user session telemetry &amp; IP logs.
+                Enter developer password to access user session telemetry &amp; fast site controls.
               </p>
             </div>
 
@@ -107,9 +115,9 @@ export const DevAdminModal: React.FC<DevAdminModalProps> = ({ isOpen, onClose })
                   <ShieldCheck className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-extrabold text-white">Developer Telemetry Portal</h3>
+                  <h3 className="text-lg font-extrabold text-white">Developer Control Center</h3>
                   <p className="text-xs text-slate-400">
-                    All authorized accounts, IP addresses, and country locations.
+                    Fast navigation &amp; telemetry logs.
                   </p>
                 </div>
               </div>
@@ -118,17 +126,57 @@ export const DevAdminModal: React.FC<DevAdminModalProps> = ({ isOpen, onClose })
               </span>
             </div>
 
-            <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-2">
+            {/* Fast Navigation Controls */}
+            <div className="grid grid-cols-3 gap-3">
+              <button
+                onClick={() => {
+                  onGoHome();
+                  onClose();
+                }}
+                className="cursor-pointer flex flex-col items-center justify-center p-3.5 rounded-2xl bg-[#0c1326] border border-sky-500/30 hover:border-sky-500 hover:bg-sky-500/10 transition-all text-white group"
+              >
+                <Home className="w-5 h-5 text-sky-400 mb-1.5 group-hover:scale-110 transition-transform" />
+                <span className="text-xs font-bold">Landing Page</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  onGoDashboard();
+                  onClose();
+                }}
+                className="cursor-pointer flex flex-col items-center justify-center p-3.5 rounded-2xl bg-[#0c1326] border border-sky-500/30 hover:border-sky-500 hover:bg-sky-500/10 transition-all text-white group"
+              >
+                <LayoutDashboard className="w-5 h-5 text-sky-400 mb-1.5 group-hover:scale-110 transition-transform" />
+                <span className="text-xs font-bold">Dashboard</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  onOpenAuth();
+                  onClose();
+                }}
+                className="cursor-pointer flex flex-col items-center justify-center p-3.5 rounded-2xl bg-[#0c1326] border border-indigo-500/30 hover:border-indigo-500 hover:bg-indigo-500/10 transition-all text-white group"
+              >
+                <KeyRound className="w-5 h-5 text-indigo-400 mb-1.5 group-hover:scale-110 transition-transform" />
+                <span className="text-xs font-bold">Auth Modal</span>
+              </button>
+            </div>
+
+            {/* Accounts Telemetry List */}
+            <div className="space-y-3 max-h-[45vh] overflow-y-auto pr-2">
+              <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest pt-2">
+                Authorized User Accounts &amp; IP Telemetry
+              </h4>
               {enhancedUsers.map((u) => (
                 <div
                   key={u.id}
-                  className="p-4 rounded-2xl bg-[#0c1326] border border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-sky-500/40 transition-all"
+                  className="p-3.5 rounded-2xl bg-[#0c1326] border border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:border-sky-500/40 transition-all"
                 >
-                  <div className="flex items-center gap-3.5">
+                  <div className="flex items-center gap-3">
                     <img
                       src={getDiscordAvatarUrl(u, 96)}
                       alt={u.username}
-                      className="w-11 h-11 rounded-full object-cover border border-sky-400/60 shadow-md"
+                      className="w-10 h-10 rounded-full object-cover border border-sky-400/60 shadow-md"
                       onError={(e) => {
                         (e.currentTarget as HTMLImageElement).src =
                           'https://cdn.discordapp.com/embed/avatars/0.png';
@@ -142,12 +190,12 @@ export const DevAdminModal: React.FC<DevAdminModalProps> = ({ isOpen, onClose })
                         </span>
                       </div>
                       <div className="text-xs text-slate-400 mt-0.5 font-mono">
-                        Discord ID: {u.id}
+                        ID: {u.id}
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3 bg-[#050811] px-3.5 py-2 rounded-xl border border-slate-800/60 shrink-0">
+                  <div className="flex items-center gap-3 bg-[#050811] px-3.5 py-1.5 rounded-xl border border-slate-800/60 shrink-0">
                     <div className="flex flex-col text-right">
                       <span className="text-[11px] font-mono text-slate-300">{u.ip}</span>
                       <span className="text-xs font-semibold text-sky-400 flex items-center gap-1 justify-end">
