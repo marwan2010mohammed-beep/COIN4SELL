@@ -1,5 +1,17 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Sparkles, Send, LogOut } from 'lucide-react';
+import {
+  ArrowLeft,
+  Sparkles,
+  Send,
+  LogOut,
+  ShoppingBag,
+  Compass,
+  Gift,
+  TrendingUp,
+  Megaphone,
+  Users,
+  Check,
+} from 'lucide-react';
 import { GoldCoinIcon } from './Icons';
 import { DiscordUser, getDiscordAvatarUrl } from '../utils/discordAuth';
 
@@ -21,6 +33,39 @@ export const MemberCoinsPage: React.FC<MemberCoinsPageProps> = ({
   const [coinInput1, setCoinInput1] = useState('');
   const [coinInput2, setCoinInput2] = useState('');
   const [coinInput3, setCoinInput3] = useState('');
+
+  const getTodayDateKey = () => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  };
+
+  const [lastClaimedDate, setLastClaimedDate] = useState<string>(() => {
+    try {
+      const stored = localStorage.getItem('coin4sell_daily_reward_last_claim');
+      return stored !== null ? stored : '';
+    } catch {
+      return '';
+    }
+  });
+
+  const isClaimedToday = lastClaimedDate === getTodayDateKey();
+
+  const handleClaimDaily = () => {
+    if (isClaimedToday) return;
+    const todayKey = getTodayDateKey();
+    onEarnCoins(2);
+    try {
+      localStorage.setItem('coin4sell_daily_reward_last_claim', todayKey);
+    } catch (e) {
+      console.error(e);
+    }
+    setLastClaimedDate(todayKey);
+  };
+
+  const displayName = discordUser?.global_name || discordUser?.username || 'SONHEI';
+  const currentBalance = coins.toFixed(2);
+  const totalEarned = coins.toFixed(2);
+  const totalSpent = (0).toFixed(2);
 
   const handleSubmit1 = (e: React.FormEvent) => {
     e.preventDefault();
@@ -94,15 +139,169 @@ export const MemberCoinsPage: React.FC<MemberCoinsPageProps> = ({
           </button>
           <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0a1124] border border-amber-500/30 text-amber-300 text-sm font-bold shadow-[0_0_15px_rgba(245,158,11,0.15)]">
             <GoldCoinIcon className="w-4 h-4" />
-            <span className="tabular-nums">{coins.toLocaleString()} Coins</span>
+            <span className="tabular-nums">{coins.toFixed(2)} Coins</span>
           </div>
         </div>
       </header>
 
       {/* Main Content Container */}
-      <main className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-8 py-12 space-y-10">
+      <main className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-8 py-10 space-y-10">
+        {/* User Greeting & Stats Dashboard Section (from Screenshots) */}
+        <div className="space-y-6">
+          {/* Welcome Headline */}
+          <div className="space-y-1">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight flex items-center gap-2">
+              <span>Welcome back, {displayName}</span>
+              <span className="text-2xl">👑</span>
+            </h1>
+            <p className="text-slate-400 text-xs sm:text-sm">
+              Here&apos;s what&apos;s happening with your communities today.
+            </p>
+          </div>
+
+          {/* Balance & Daily Reward Card */}
+          <div className="rounded-3xl bg-[#080d19] border border-slate-800/80 p-6 sm:p-7 space-y-6 shadow-xl">
+            {/* Balance & Action buttons */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <span className="text-[11px] font-bold text-slate-400 tracking-wider uppercase">
+                  YOUR BALANCE
+                </span>
+                <div className="flex items-center gap-3 mt-1.5">
+                  <div className="w-8 h-8 rounded-full bg-[#EAB308] border border-amber-300/40 text-slate-950 font-black text-sm flex items-center justify-center shadow-[0_0_12px_rgba(234,179,8,0.4)]">
+                    $
+                  </div>
+                  <span className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+                    {currentBalance}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const el = document.getElementById('exchange-boxes');
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="cursor-pointer inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#F59E0B] hover:bg-[#D97706] text-slate-950 font-bold text-xs sm:text-sm shadow-md transition-all active:scale-95"
+                >
+                  <ShoppingBag className="w-4 h-4" />
+                  <span>Get coins</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const el = document.getElementById('exchange-boxes');
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="cursor-pointer inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#0e1628] hover:bg-[#141f38] border border-slate-700/80 text-white font-bold text-xs sm:text-sm transition-all active:scale-95"
+                >
+                  <Compass className="w-4 h-4 text-slate-300" />
+                  <span>Earn coins</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Daily Reward Row */}
+            <div className="rounded-2xl bg-[#08151d] border border-emerald-500/20 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex items-center gap-3.5">
+                <div className="w-10 h-10 rounded-xl bg-[#0a2327] border border-emerald-500/30 text-emerald-400 flex items-center justify-center shrink-0">
+                  <Gift className="w-5 h-5 text-[#2DD4BF]" />
+                </div>
+                <div>
+                  <div className="text-sm font-bold text-white flex items-center gap-2">
+                    <span>Daily reward</span>
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                      +2 Coins
+                    </span>
+                  </div>
+                  <div className="text-xs text-slate-400 mt-0.5">
+                    {isClaimedToday ? (
+                      <span className="text-emerald-400/90 font-medium">
+                        Claimed today! Resets at 12:00 AM (midnight).
+                      </span>
+                    ) : (
+                      <span>Ready to claim — keep your streak alive!</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                {isClaimedToday ? (
+                  <button
+                    disabled
+                    type="button"
+                    className="w-full sm:w-auto px-5 py-2 rounded-xl bg-slate-800/80 border border-slate-700/60 text-slate-400 font-bold text-xs flex items-center justify-center gap-1.5 cursor-not-allowed"
+                  >
+                    <Check className="w-4 h-4 text-emerald-400" />
+                    <span>Claimed</span>
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleClaimDaily}
+                    type="button"
+                    className="cursor-pointer w-full sm:w-auto px-6 py-2 rounded-xl bg-[#2DD4BF] hover:bg-[#14B8A6] text-slate-950 font-extrabold text-sm shadow-[0_0_15px_rgba(45,212,191,0.35)] active:scale-95 transition-all"
+                  >
+                    Claim
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* 3 Stats Boxes: TOTAL EARNED, TOTAL SPENT, REFERRALS */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {/* TOTAL EARNED */}
+            <div className="rounded-2xl bg-[#080d19] border border-slate-800/80 p-5 flex flex-col justify-between shadow-lg hover:border-slate-700 transition-all">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                  TOTAL EARNED
+                </span>
+                <div className="w-8 h-8 rounded-lg bg-[#0e271c] border border-emerald-500/20 text-emerald-400 flex items-center justify-center">
+                  <TrendingUp className="w-4 h-4" />
+                </div>
+              </div>
+              <div className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight mt-3">
+                {totalEarned}
+              </div>
+            </div>
+
+            {/* TOTAL SPENT */}
+            <div className="rounded-2xl bg-[#080d19] border border-slate-800/80 p-5 flex flex-col justify-between shadow-lg hover:border-slate-700 transition-all">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                  TOTAL SPENT
+                </span>
+                <div className="w-8 h-8 rounded-lg bg-[#1f1737] border border-purple-500/20 text-purple-400 flex items-center justify-center">
+                  <Megaphone className="w-4 h-4" />
+                </div>
+              </div>
+              <div className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight mt-3">
+                {totalSpent}
+              </div>
+            </div>
+
+            {/* REFERRALS */}
+            <div className="rounded-2xl bg-[#080d19] border border-slate-800/80 p-5 flex flex-col justify-between shadow-lg hover:border-slate-700 transition-all">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                  REFERRALS
+                </span>
+                <div className="w-8 h-8 rounded-lg bg-[#2b1f13] border border-amber-500/20 text-amber-400 flex items-center justify-center">
+                  <Users className="w-4 h-4" />
+                </div>
+              </div>
+              <div className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight mt-3">
+                0
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Title Banner */}
-        <div className="text-center space-y-4">
+        <div id="exchange-boxes" className="text-center space-y-4 pt-6 border-t border-slate-800/60">
           <div className="flex justify-center mb-4">
             <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-sky-500/30 shadow-[0_0_20px_rgba(2,132,199,0.3)]">
               <img

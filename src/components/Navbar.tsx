@@ -9,6 +9,8 @@ interface NavbarProps {
   discordUser: DiscordUser | null;
   onLoginWithDiscord: () => void;
   onLogout: () => void;
+  showMemberCoins?: boolean;
+  setShowMemberCoins?: (show: boolean) => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -16,6 +18,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   discordUser,
   onLoginWithDiscord,
   onLogout,
+  showMemberCoins,
+  setShowMemberCoins,
 }) => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -71,6 +75,18 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Right CTA / Auth Status */}
         <div className="hidden sm:flex items-center gap-3 shrink-0">
+          {discordUser && discordUser.username === 'Marwan' && (
+            <button
+              onClick={() => {
+                // Toggle view functionality
+                window.location.hash = window.location.hash === '#dashboard' ? '' : '#dashboard';
+                setShowMemberCoins?.(!showMemberCoins);
+              }}
+              className="px-3 py-1.5 rounded-lg bg-sky-900/50 border border-sky-500/30 text-sky-300 text-xs font-bold hover:bg-sky-900"
+            >
+              Toggle View
+            </button>
+          )}
           {discordUser ? (
             <div className="flex items-center gap-2.5">
               <button

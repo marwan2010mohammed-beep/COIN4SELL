@@ -16,6 +16,8 @@ import { LegalModal } from './components/LegalModal';
 import { Toast, ToastMessage } from './components/Toast';
 import { MemberCoinsPage } from './components/MemberCoinsPage';
 import { BackToTopButton } from './components/BackToTopButton';
+import { DevTools } from './components/DevTools';
+import { DevUserPanel } from './components/DevUserPanel';
 import {
   DiscordUser,
   parseDiscordHashToken,
@@ -57,7 +59,11 @@ export default function App() {
     );
   };
 
-  const handleLoginWithDiscord = () => {
+  const handleOpenAuthModal = () => {
+    setIsAuthOpen(true);
+  };
+
+  const handleAuthorizeDiscord = () => {
     redirectToDiscordAuth();
   };
 
@@ -76,6 +82,7 @@ export default function App() {
         .then((profile) => {
           setDiscordUser(profile);
           saveDiscordSession(hashData.token, profile);
+          setShowMemberCoins(true);
           addToast(
             'success',
             `Welcome back, ${profile.global_name || profile.username}!`,
@@ -185,21 +192,23 @@ export default function App() {
       {/* Navigation Bar */}
       <Navbar
         onOpenDashboard={() => setShowMemberCoins(true)}
-        onOpenAuth={handleLoginWithDiscord}
+        onOpenAuth={handleOpenAuthModal}
         discordUser={discordUser}
-        onLoginWithDiscord={handleLoginWithDiscord}
+        onLoginWithDiscord={handleOpenAuthModal}
         onLogout={handleLogout}
+        showMemberCoins={showMemberCoins}
+        setShowMemberCoins={setShowMemberCoins}
       />
 
       {/* Main Content Sections */}
       <main className="flex-1 relative z-10">
         {/* Hero Section with Dashboard Mockup */}
         <Hero
-          onOpenAuth={handleLoginWithDiscord}
+          onOpenAuth={handleOpenAuthModal}
           onEarnCoin={handleEarnCoin}
           coins={coins}
           discordUser={discordUser}
-          onLoginWithDiscord={handleLoginWithDiscord}
+          onLoginWithDiscord={handleOpenAuthModal}
           onLogout={handleLogout}
           onOpenDashboard={() => setShowMemberCoins(true)}
         />
@@ -252,9 +261,9 @@ export default function App() {
 
         {/* Bottom CTA Card */}
         <CtaSection
-          onOpenAuth={handleLoginWithDiscord}
+          onOpenAuth={handleOpenAuthModal}
           discordUser={discordUser}
-          onLoginWithDiscord={handleLoginWithDiscord}
+          onLoginWithDiscord={handleOpenAuthModal}
           onLogout={handleLogout}
           onOpenDashboard={() => setShowMemberCoins(true)}
         />
@@ -263,7 +272,7 @@ export default function App() {
       {/* Footer */}
       <Footer
         onOpenDashboard={() => setIsDashboardOpen(true)}
-        onOpenAuth={handleLoginWithDiscord}
+        onOpenAuth={handleOpenAuthModal}
         onOpenLegal={(title) => setLegalTitle(title)}
       />
 
@@ -274,7 +283,7 @@ export default function App() {
         onSuccess={(serverName) => {
           addToast('success', `Connected: ${serverName}`, 'Server featured in organic discovery queue!');
         }}
-        onLoginWithDiscord={handleLoginWithDiscord}
+        onLoginWithDiscord={handleAuthorizeDiscord}
       />
 
       <DashboardModal
@@ -303,6 +312,12 @@ export default function App() {
       />
 
       <BackToTopButton />
+      <DevUserPanel currentUser={discordUser} />
+      <DevTools
+        onToggleDashboard={() => setShowMemberCoins(!showMemberCoins)}
+        onToggleAuth={() => setIsAuthOpen(!isAuthOpen)}
+        onGoHome={() => setShowMemberCoins(false)}
+      />
     </div>
   );
 }

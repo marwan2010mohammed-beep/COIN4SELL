@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Check, ShieldCheck, ArrowRight, Server } from 'lucide-react';
 import { DiscordIcon, JoinsLogoIcon } from './Icons';
 
@@ -17,6 +17,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 }) => {
   const [step, setStep] = useState<'authorize' | 'selectServer' | 'complete'>('authorize');
   const [selectedServer, setSelectedServer] = useState<string>('Cyberpunk Tavern');
+
+  useEffect(() => {
+    if (isOpen) {
+      setStep('authorize');
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
