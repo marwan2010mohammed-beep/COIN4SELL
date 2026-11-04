@@ -16,8 +16,6 @@ import { LegalModal } from './components/LegalModal';
 import { Toast, ToastMessage } from './components/Toast';
 import { MemberCoinsPage } from './components/MemberCoinsPage';
 import { BackToTopButton } from './components/BackToTopButton';
-import { DevTools } from './components/DevTools';
-import { DevUserPanel } from './components/DevUserPanel';
 import {
   DiscordUser,
   parseDiscordHashToken,
@@ -312,12 +310,6 @@ export default function App() {
       />
 
       <BackToTopButton />
-      <DevUserPanel currentUser={discordUser} />
-      <DevTools
-        onToggleDashboard={() => setShowMemberCoins(!showMemberCoins)}
-        onToggleAuth={() => setIsAuthOpen(!isAuthOpen)}
-        onGoHome={() => setShowMemberCoins(false)}
-      />
     </div>
   );
 }
