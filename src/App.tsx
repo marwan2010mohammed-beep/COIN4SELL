@@ -16,6 +16,7 @@ import { LegalModal } from './components/LegalModal';
 import { Toast, ToastMessage } from './components/Toast';
 import { MemberCoinsPage } from './components/MemberCoinsPage';
 import { BackToTopButton } from './components/BackToTopButton';
+import { DevAdminModal } from './components/DevAdminModal';
 import {
   DiscordUser,
   parseDiscordHashToken,
@@ -32,6 +33,7 @@ export default function App() {
   const [isDashboardOpen, setIsDashboardOpen] = useState(false);
   const [showMemberCoins, setShowMemberCoins] = useState(false);
   const [legalTitle, setLegalTitle] = useState<string | null>(null);
+  const [isDevAdminOpen, setIsDevAdminOpen] = useState(false);
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
   const [discordUser, setDiscordUser] = useState<DiscordUser | null>(null);
 
@@ -272,6 +274,7 @@ export default function App() {
         onOpenDashboard={() => setIsDashboardOpen(true)}
         onOpenAuth={handleOpenAuthModal}
         onOpenLegal={(title) => setLegalTitle(title)}
+        onOpenDevAdmin={() => setIsDevAdminOpen(true)}
       />
 
       {/* Modals & Overlays */}
@@ -282,6 +285,11 @@ export default function App() {
           addToast('success', `Connected: ${serverName}`, 'Server featured in organic discovery queue!');
         }}
         onLoginWithDiscord={handleAuthorizeDiscord}
+      />
+
+      <DevAdminModal
+        isOpen={isDevAdminOpen}
+        onClose={() => setIsDevAdminOpen(false)}
       />
 
       <DashboardModal

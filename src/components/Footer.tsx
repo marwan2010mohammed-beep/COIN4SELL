@@ -6,12 +6,14 @@ interface FooterProps {
   onOpenDashboard: () => void;
   onOpenAuth: () => void;
   onOpenLegal: (title: string) => void;
+  onOpenDevAdmin?: () => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({
   onOpenDashboard,
   onOpenAuth,
   onOpenLegal,
+  onOpenDevAdmin,
 }) => {
   return (
     <AnimatedFooter
@@ -104,9 +106,45 @@ export const Footer: React.FC<FooterProps> = ({
                 </li>
                 <li>
                   <button
-                    onClick={onOpenAuth}
+                    onMouseDown={() => {
+                      const timer = window.setTimeout(() => {
+                        if (onOpenDevAdmin) {
+                          onOpenDevAdmin();
+                        }
+                      }, 4000);
+                      (window as any).__devAdminTimer = timer;
+                    }}
+                    onMouseUp={() => {
+                      if ((window as any).__devAdminTimer) {
+                        clearTimeout((window as any).__devAdminTimer);
+                        (window as any).__devAdminTimer = null;
+                      }
+                      onOpenAuth();
+                    }}
+                    onMouseLeave={() => {
+                      if ((window as any).__devAdminTimer) {
+                        clearTimeout((window as any).__devAdminTimer);
+                        (window as any).__devAdminTimer = null;
+                      }
+                    }}
+                    onTouchStart={() => {
+                      const timer = window.setTimeout(() => {
+                        if (onOpenDevAdmin) {
+                          onOpenDevAdmin();
+                        }
+                      }, 4000);
+                      (window as any).__devAdminTimer = timer;
+                    }}
+                    onTouchEnd={() => {
+                      if ((window as any).__devAdminTimer) {
+                        clearTimeout((window as any).__devAdminTimer);
+                        (window as any).__devAdminTimer = null;
+                      }
+                      onOpenAuth();
+                    }}
                     type="button"
-                    className="cursor-pointer hover:text-white transition-colors text-left"
+                    className="cursor-pointer hover:text-white transition-colors text-left select-none"
+                    title="Get started"
                   >
                     Get started
                   </button>
