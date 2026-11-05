@@ -28,7 +28,22 @@ import {
 } from './utils/discordAuth';
 
 export default function App() {
-  const [coins, setCoins] = useState(0);
+  const [coins, setCoins] = useState<number>(() => {
+    try {
+      const saved = localStorage.getItem('coin4sell_user_coins');
+      return saved !== null ? parseFloat(saved) || 0 : 0;
+    } catch {
+      return 0;
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('coin4sell_user_coins', coins.toString());
+    } catch (e) {
+      console.error(e);
+    }
+  }, [coins]);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isDashboardOpen, setIsDashboardOpen] = useState(false);
   const [showMemberCoins, setShowMemberCoins] = useState(false);

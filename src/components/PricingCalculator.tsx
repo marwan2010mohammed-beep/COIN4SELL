@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Check, ArrowRight, Sparkles, Tag } from 'lucide-react';
 import { GoldCoinIcon } from './Icons';
+import { PricingPlansComponent } from './PricingPlansComponent';
 
 interface PricingCalculatorProps {
   onStartFree: () => void;
@@ -235,21 +236,25 @@ export const PricingCalculator: React.FC<PricingCalculatorProps> = ({
             </div>
 
             {/* Big Action Button */}
-            <button
-              onClick={() => onBuyCoins(coins, totalPrice)}
-              type="button"
-              className="cursor-pointer w-full py-4 rounded-xl font-bold text-sm sm:text-base text-white bg-gradient-to-r from-sky-500 via-sky-600 to-blue-600 hover:from-sky-400 hover:to-blue-500 shadow-[0_0_25px_rgba(56,189,248,0.35)] hover:shadow-[0_0_35px_rgba(56,189,248,0.55)] active:scale-[0.99] transition-all flex items-center justify-center gap-2"
+            <a
+              href="https://discord.com/users/1511463181799788825"
+              target="_blank"
+              rel="noreferrer"
+              className="cursor-pointer w-full py-4 rounded-xl font-bold text-sm sm:text-base text-white bg-gradient-to-r from-sky-500 via-sky-600 to-blue-600 hover:from-sky-400 hover:to-blue-500 shadow-[0_0_25px_rgba(56,189,248,0.35)] hover:shadow-[0_0_35px_rgba(56,189,248,0.55)] active:scale-[0.99] transition-all flex items-center justify-center gap-2 no-underline text-center"
             >
               <span>
                 Get {coins.toLocaleString()} coins · ${totalPrice.toFixed(2)}
               </span>
               <ArrowRight className="w-4 h-4" />
-            </button>
+            </a>
 
             <p className="mt-3.5 text-center text-xs text-slate-500">
               From 200 to 100,000 coins · one-time · secured by Stripe
             </p>
           </div>
+
+          {/* Integrated Premium Blue Pricing Plans Component */}
+          <PricingPlansComponent />
         </div>
       </div>
     </section>
